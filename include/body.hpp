@@ -10,14 +10,14 @@ public:
     void update_position_rk4(float dt, long double fx, long double fy);
     void update_position_e(float dt);
     void update_force(const Body &body_alt);
-    long double getX() const;
-    long double getY() const;
-    long double getVX() const;
-    long double getVY() const;
-    long double getMass() const;
-    long double getRadius() const;
-    long double getFX() const;
-    long double getFY() const;
+    long double get_x() const;
+    long double get_y() const;
+    long double get_vx() const;
+    long double get_vy() const;
+    long double get_mass() const;
+    long double get_radius() const;
+    long double get_fx() const;
+    long double get_fy() const;
     std::string get_name() const;
     void reset_force();
 

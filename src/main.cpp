@@ -31,15 +31,15 @@ int main()
 
     // Views
     sf::View defaultView(sf::FloatRect(-float(WINDOW_X) / 2.f, -float(WINDOW_Y) / 2.f, float(WINDOW_X), float(WINDOW_Y)));
-    sf::View yellowView(sf::FloatRect((-float(WINDOW_X) / 2.f) - (bodies[4].getX() * DISTANCE_SCALE_FACTOR), (-float(WINDOW_Y) / 2.f) - (bodies[4].getY() * DISTANCE_SCALE_FACTOR), float(WINDOW_X), float(WINDOW_Y)));
+    sf::View yellowView(sf::FloatRect((-float(WINDOW_X) / 2.f) - (bodies[4].get_x() * DISTANCE_SCALE_FACTOR), (-float(WINDOW_Y) / 2.f) - (bodies[4].get_y() * DISTANCE_SCALE_FACTOR), float(WINDOW_X), float(WINDOW_Y)));
     window.setView(defaultView);
 
     // Shape creation
     for (int i = 0; i < bodies.size(); ++i)
     {
-        sf::CircleShape shape(bodies[i].getRadius() * SIZE_SCALE_FACTOR);
+        sf::CircleShape shape(bodies[i].get_radius() * SIZE_SCALE_FACTOR);
         shape.setFillColor(colours[i]);
-        shape.setOrigin(bodies[i].getRadius() * SIZE_SCALE_FACTOR, bodies[i].getRadius() * SIZE_SCALE_FACTOR);
+        shape.setOrigin(bodies[i].get_radius() * SIZE_SCALE_FACTOR, bodies[i].get_radius() * SIZE_SCALE_FACTOR);
         shapes.insert(shapes.end(), shape);
     }
 
@@ -86,7 +86,7 @@ int main()
 
         for (int i = 0; i < shapes.size(); ++i)
         {
-            shapes[i].setPosition(bodies[i].getX() * DISTANCE_SCALE_FACTOR, -bodies[i].getY() * DISTANCE_SCALE_FACTOR);
+            shapes[i].setPosition(bodies[i].get_x() * DISTANCE_SCALE_FACTOR, -bodies[i].get_y() * DISTANCE_SCALE_FACTOR);
             window.draw(shapes[i]);
         }
 
