@@ -65,7 +65,11 @@ int main()
     const float DISTANCE_SCALE_FACTOR = 0.0000005;
     const float SIZE_SCALE_FACTOR = 0.000005;
 
-    sf::RenderWindow window(sf::VideoMode(WINDOW_X, WINDOW_Y), "Gravity Simulator");
+    // Configure window.
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 4.0;
+    sf::RenderWindow window(sf::VideoMode(WINDOW_X, WINDOW_Y), "Gravity Simulator", sf::Style::Close, settings);
+    window.setVerticalSyncEnabled(true);
     window.setFramerateLimit(60);
 
     // Create bodies.
