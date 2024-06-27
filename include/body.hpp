@@ -7,7 +7,7 @@ class Body
 {
 public:
     Body(const std::string &name, long double x, long double y, long double mass, long double radius, long double vx, long double vy);
-    void update_position_rk4(float dt, long double fx, long double fy);
+    void update_position_rk4(float dt);
     void update_position_e(float dt);
     void update_force(const Body &body_alt);
     long double get_x() const;
