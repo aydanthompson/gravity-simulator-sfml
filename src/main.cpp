@@ -75,13 +75,6 @@ int main()
 
         hours += dt / (60 * 60);
 
-        // std::cout << std::scientific << std::setprecision(1) << std::showpos;
-        // std::cout << "d: Earth (" << earth.getX() << ", " << earth.getY() << "), Moon (" << moon.getX() << ", " << moon.getY() << ")\n";
-        // std::cout << "v: Earth (" << earth.getVX() << ", " << earth.getVY() << "), Moon (" << moon.getVX() << ", " << moon.getVY() << ")\n";
-        // std::cout << "f: Earth (" << earth.getFX() << ", " << earth.getFY() << "), Moon (" << moon.getFX() << ", " << moon.getFY() << ")\n";
-        // std::cout << std::fixed << std::noshowpos;
-        // std::cout << "Hours: " << hours << "\n";
-
         window.clear();
 
         for (int i = 0; i < shapes.size(); ++i)
