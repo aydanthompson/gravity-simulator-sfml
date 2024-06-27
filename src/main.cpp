@@ -89,7 +89,7 @@ int main()
         sf::CircleShape shape(bodies[i].get_radius() * SIZE_SCALE_FACTOR);
         shape.setFillColor(colours[i]);
         shape.setOrigin(bodies[i].get_radius() * SIZE_SCALE_FACTOR, bodies[i].get_radius() * SIZE_SCALE_FACTOR);
-        shapes.insert(shapes.end(), shape);
+        shapes.push_back(shape);
     }
 
     // Create views.
