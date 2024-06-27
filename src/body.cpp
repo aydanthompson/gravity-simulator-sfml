@@ -42,7 +42,7 @@ void Body::update_e(float dt, long double fx, long double fy)
 
     // Update position components.
     x += vx * dt;
-    x += vx * dt;
+    y += vy * dt;
 }
 
 // Getters
