@@ -3,45 +3,42 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <cmath>
 
 void draw_grid(sf::RenderWindow &window, const sf::View &view)
 {
-    sf::Vector2f top_left = window.mapPixelToCoords(sf::Vector2i(0, 0), view);
-    sf::Vector2f bottom_right = window.mapPixelToCoords(sf::Vector2i(window.getSize().x, window.getSize().y), view);
-
-    float major_spacing = (bottom_right.x - top_left.x) / 10.0f;
+    // Set major and minor spacing distance and colour.
+    float major_spacing = 100.0f;
     float minor_spacing = major_spacing / 10.0f;
     sf::Color major_colour = sf::Color(64, 64, 64, 64);
     sf::Color minor_colour = sf::Color(64, 64, 64, 32);
 
+    sf::Vector2f view_size = view.getSize();
+    sf::Vector2f view_centre = view.getCenter();
+
+    sf::Vector2f top_left = view_centre - view_size / 2.0f;
+    sf::Vector2f bottom_right = view_centre + view_size / 2.0f;
+
+    // Stop lines from being drawn between pixels, fixes flickering.
+    float start_x = std::floor(top_left.x / minor_spacing) * minor_spacing;
+    float start_y = std::floor(top_left.y / minor_spacing) * minor_spacing;
+
     sf::VertexArray grid_lines(sf::Lines);
 
-    // Draw major vertical lines.
-    for (float x = top_left.x; x < bottom_right.x; x += minor_spacing)
+    // Draw vertical lines.
+    for (float x = start_x; x <= bottom_right.x; x += minor_spacing)
     {
-        grid_lines.append(sf::Vertex(sf::Vector2f(x, top_left.y), minor_colour));
-        grid_lines.append(sf::Vertex(sf::Vector2f(x, bottom_right.y), minor_colour));
+        sf::Color colour = ((int(x) % int(major_spacing)) == 0) ? major_colour : minor_colour;
+        grid_lines.append(sf::Vertex(sf::Vector2f(x, top_left.y), colour));
+        grid_lines.append(sf::Vertex(sf::Vector2f(x, bottom_right.y), colour));
     }
 
-    // Draw minor vertical lines.
-    for (float x = top_left.x; x < bottom_right.x; x += major_spacing)
+    // Draw horizontal lines.
+    for (float y = start_y; y <= bottom_right.y; y += minor_spacing)
     {
-        grid_lines.append(sf::Vertex(sf::Vector2f(x, top_left.y), major_colour));
-        grid_lines.append(sf::Vertex(sf::Vector2f(x, bottom_right.y), major_colour));
-    }
-
-    // Draw major horizontal lines.
-    for (float y = top_left.y; y < bottom_right.y; y += minor_spacing)
-    {
-        grid_lines.append(sf::Vertex(sf::Vector2f(top_left.x, y), minor_colour));
-        grid_lines.append(sf::Vertex(sf::Vector2f(bottom_right.x, y), minor_colour));
-    }
-
-    // Draw minor horizontal lines.
-    for (float y = top_left.y; y < bottom_right.y; y += major_spacing)
-    {
-        grid_lines.append(sf::Vertex(sf::Vector2f(top_left.x, y), major_colour));
-        grid_lines.append(sf::Vertex(sf::Vector2f(bottom_right.x, y), major_colour));
+        sf::Color colour = ((int(y) % int(major_spacing)) == 0) ? major_colour : minor_colour;
+        grid_lines.append(sf::Vertex(sf::Vector2f(top_left.x, y), colour));
+        grid_lines.append(sf::Vertex(sf::Vector2f(bottom_right.x, y), colour));
     }
 
     window.draw(grid_lines);
