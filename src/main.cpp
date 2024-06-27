@@ -10,8 +10,8 @@ void draw_grid(sf::RenderWindow &window, const sf::View &view)
     // Set major and minor spacing distance and colour.
     float major_spacing = 100.0f;
     float minor_spacing = major_spacing / 10.0f;
-    sf::Color major_colour = sf::Color(64, 64, 64, 64);
-    sf::Color minor_colour = sf::Color(64, 64, 64, 32);
+    sf::Color major_colour = sf::Color(64, 64, 64, 32);
+    sf::Color minor_colour = sf::Color(64, 64, 64, 16);
 
     sf::Vector2f view_size = view.getSize();
     sf::Vector2f view_centre = view.getCenter();
