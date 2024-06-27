@@ -49,12 +49,12 @@ void Body::update_position_e(float dt)
 void Body::update_force(const Body &body_alt)
 {
     // Calculate total distance using x and y components.
-    long double dx = getX() - body_alt.getX();
-    long double dy = getY() - body_alt.getY();
+    long double dx = get_x() - body_alt.get_x();
+    long double dy = get_y() - body_alt.get_y();
     long double d = sqrt(pow(dx, 2) + pow(dy, 2));
 
     // Calculate gravitational force between the two bodies.
-    long double f = (G * getMass() * body_alt.getMass()) / pow(d, 2);
+    long double f = (G * get_mass() * body_alt.get_mass()) / pow(d, 2);
 
     // Calculate the x and y components of the force, add to the current applied force.
     fx -= f * dx / d;
@@ -68,12 +68,12 @@ void Body::reset_force()
 }
 
 // Getters
-long double Body::getX() const { return x; }
-long double Body::getY() const { return y; }
-long double Body::getVX() const { return vx; }
-long double Body::getVY() const { return vy; }
-long double Body::getMass() const { return mass; }
-long double Body::getRadius() const { return radius; }
-long double Body::getFX() const { return fx; }
-long double Body::getFY() const { return fy; }
 std::string Body::get_name() const { return name; }
+long double Body::get_x() const { return x; }
+long double Body::get_y() const { return y; }
+long double Body::get_vx() const { return vx; }
+long double Body::get_vy() const { return vy; }
+long double Body::get_fx() const { return fx; }
+long double Body::get_fy() const { return fy; }
+long double Body::get_mass() const { return mass; }
+long double Body::get_radius() const { return radius; }
