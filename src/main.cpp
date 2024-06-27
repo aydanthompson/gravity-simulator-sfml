@@ -4,6 +4,49 @@
 #include <iomanip>
 #include <vector>
 
+void draw_grid(sf::RenderWindow &window, const sf::View &view)
+{
+    sf::Vector2f top_left = window.mapPixelToCoords(sf::Vector2i(0, 0), view);
+    sf::Vector2f bottom_right = window.mapPixelToCoords(sf::Vector2i(window.getSize().x, window.getSize().y), view);
+
+    float major_spacing = (bottom_right.x - top_left.x) / 10.0f;
+    float minor_spacing = major_spacing / 10.0f;
+    sf::Color major_colour = sf::Color(64, 64, 64, 64);
+    sf::Color minor_colour = sf::Color(64, 64, 64, 32);
+
+    sf::VertexArray grid_lines(sf::Lines);
+
+    // Draw major vertical lines.
+    for (float x = top_left.x; x < bottom_right.x; x += minor_spacing)
+    {
+        grid_lines.append(sf::Vertex(sf::Vector2f(x, top_left.y), minor_colour));
+        grid_lines.append(sf::Vertex(sf::Vector2f(x, bottom_right.y), minor_colour));
+    }
+
+    // Draw minor vertical lines.
+    for (float x = top_left.x; x < bottom_right.x; x += major_spacing)
+    {
+        grid_lines.append(sf::Vertex(sf::Vector2f(x, top_left.y), major_colour));
+        grid_lines.append(sf::Vertex(sf::Vector2f(x, bottom_right.y), major_colour));
+    }
+
+    // Draw major horizontal lines.
+    for (float y = top_left.y; y < bottom_right.y; y += minor_spacing)
+    {
+        grid_lines.append(sf::Vertex(sf::Vector2f(top_left.x, y), minor_colour));
+        grid_lines.append(sf::Vertex(sf::Vector2f(bottom_right.x, y), minor_colour));
+    }
+
+    // Draw minor horizontal lines.
+    for (float y = top_left.y; y < bottom_right.y; y += major_spacing)
+    {
+        grid_lines.append(sf::Vertex(sf::Vector2f(top_left.x, y), major_colour));
+        grid_lines.append(sf::Vertex(sf::Vector2f(bottom_right.x, y), major_colour));
+    }
+
+    window.draw(grid_lines);
+}
+
 int main()
 {
     // Set window parameters.
@@ -85,6 +128,8 @@ int main()
         hours += dt / (60 * 60);
 
         window.clear();
+
+        draw_grid(window, window.getView());
 
         // Update and draw all shapes.
         for (int i = 0; i < shapes.size(); ++i)
