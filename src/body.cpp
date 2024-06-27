@@ -5,7 +5,7 @@
 
 const long double G = 6.67408e-11;
 
-Body::Body(const std::string& name, long double x, long double y, long double mass, long double radius, long double vx, long double vy)
+Body::Body(const std::string &name, long double x, long double y, long double mass, long double radius, long double vx, long double vy)
     : name(name), x(x), y(y), mass(mass), radius(radius), vx(vx), vy(vy), fx(0), fy(0) {}
 
 void Body::update_position_rk4(float dt, long double fx, long double fy)
@@ -61,7 +61,8 @@ void Body::update_force(const Body &body_alt)
     fy -= f * dy / d;
 }
 
-void Body::reset_force() {
+void Body::reset_force()
+{
     fx = 0;
     fy = 0;
 }
