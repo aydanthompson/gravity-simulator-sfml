@@ -38,9 +38,11 @@ int main()
     }
 
     // Create views.
-    sf::View defaultView(sf::FloatRect(-float(WINDOW_X) / 2.f, -float(WINDOW_Y) / 2.f, float(WINDOW_X), float(WINDOW_Y)));
-    sf::View yellowView(sf::FloatRect((-float(WINDOW_X) / 2.f) - (bodies[4].get_x() * DISTANCE_SCALE_FACTOR), (-float(WINDOW_Y) / 2.f) - (bodies[4].get_y() * DISTANCE_SCALE_FACTOR), float(WINDOW_X), float(WINDOW_Y)));
-    window.setView(defaultView);
+    float window_x_halved = float(WINDOW_X) / 2.f;
+    float window_y_halved = float(WINDOW_Y) / 2.f;
+    sf::View default_view(sf::FloatRect(-window_x_halved, -window_y_halved, float(WINDOW_X), float(WINDOW_Y)));
+    sf::View focus_view(sf::FloatRect(-window_x_halved - (bodies[0].get_x() * DISTANCE_SCALE_FACTOR), -window_y_halved - (bodies[0].get_y() * DISTANCE_SCALE_FACTOR), float(WINDOW_X), float(WINDOW_Y)));
+    window.setView(default_view);
 
     // Set timescale.
     // 1440 is equivalent to 1 day per second at 60 updates per second.
@@ -75,6 +77,10 @@ int main()
         {
             body_1.update_position_e(dt);
         }
+
+        // Focus the view on a specific body.
+        focus_view.setCenter(bodies[0].get_x() * DISTANCE_SCALE_FACTOR, -bodies[0].get_y() * DISTANCE_SCALE_FACTOR);
+        window.setView(focus_view);
 
         hours += dt / (60 * 60);
 
