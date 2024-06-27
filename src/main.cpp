@@ -44,6 +44,17 @@ void draw_grid(sf::RenderWindow &window, const sf::View &view)
     window.draw(grid_lines);
 }
 
+void focus_view_on_body(sf::RenderWindow &window, Body &body, const float DISTANCE_SCALE_FACTOR)
+{
+    // Get coordinates of top left corner of window when body is in the centre.
+    sf::Vector2f top_left = sf::Vector2f(body.get_x() * DISTANCE_SCALE_FACTOR, -body.get_y() * DISTANCE_SCALE_FACTOR);
+    top_left -= sf::Vector2f(window.getSize()) / 2.0f;
+
+    // Create view centred on body, retain current window size.
+    sf::View view = sf::View(sf::FloatRect(top_left, sf::Vector2f(window.getSize())));
+    window.setView(view);
+}
+
 int main()
 {
     // Set window parameters.
@@ -81,7 +92,6 @@ int main()
     float window_x_halved = float(WINDOW_X) / 2.f;
     float window_y_halved = float(WINDOW_Y) / 2.f;
     sf::View default_view(sf::FloatRect(-window_x_halved, -window_y_halved, float(WINDOW_X), float(WINDOW_Y)));
-    sf::View focus_view(sf::FloatRect(-window_x_halved - (bodies[0].get_x() * DISTANCE_SCALE_FACTOR), -window_y_halved - (bodies[0].get_y() * DISTANCE_SCALE_FACTOR), float(WINDOW_X), float(WINDOW_Y)));
     window.setView(default_view);
 
     // Set timescale.
@@ -118,9 +128,7 @@ int main()
             body_1.update_position_e(dt);
         }
 
-        // Focus the view on a specific body.
-        focus_view.setCenter(bodies[0].get_x() * DISTANCE_SCALE_FACTOR, -bodies[0].get_y() * DISTANCE_SCALE_FACTOR);
-        window.setView(focus_view);
+        focus_view_on_body(window, bodies[1], DISTANCE_SCALE_FACTOR);
 
         hours += dt / (60 * 60);
 
