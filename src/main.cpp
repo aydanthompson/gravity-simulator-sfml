@@ -58,6 +58,22 @@ void focus_view_on_body(sf::RenderWindow &window, Body *body, const float DISTAN
     window.setView(view);
 }
 
+void draw_trails(sf::RenderWindow &window, Body &body)
+{
+    std::vector<sf::Vector2f> position_history = body.get_position_history();
+
+    if (position_history.size() >= 2)
+    {
+        sf::VertexArray lines(sf::LinesStrip, position_history.size());
+        for (size_t i = 0; i < position_history.size(); ++i)
+        {
+            lines[i].position = position_history[i];
+            lines[i].color = sf::Color::White;
+        }
+        window.draw(lines);
+    }
+}
+
 int main()
 {
     // Set window parameters.
@@ -146,9 +162,10 @@ int main()
         }
 
         // Update the position of all bodies.
-        for (Body &body_1 : bodies)
+        for (Body &body : bodies)
         {
-            body_1.update_position_e(dt);
+            body.update_position_e(dt);
+            body.store_position(DISTANCE_SCALE_FACTOR);
         }
 
         focus_view_on_body(window, focused_body, DISTANCE_SCALE_FACTOR);
@@ -164,6 +181,7 @@ int main()
         {
             shapes[i].setPosition(bodies[i].get_x() * DISTANCE_SCALE_FACTOR, -bodies[i].get_y() * DISTANCE_SCALE_FACTOR);
             window.draw(shapes[i]);
+            draw_trails(window, bodies[i]);
         }
 
         window.display();

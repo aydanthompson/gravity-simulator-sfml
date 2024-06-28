@@ -2,6 +2,8 @@
 #define BODY_HPP
 
 #include <string>
+#include <vector>
+#include <SFML/Graphics.hpp>
 
 class Body
 {
@@ -20,6 +22,8 @@ public:
     long double get_fy() const;
     std::string get_name() const;
     void reset_force();
+    void store_position(const float);
+    std::vector<sf::Vector2f> get_position_history() const;
 
 private:
     std::string name;
@@ -31,6 +35,7 @@ private:
     long double vy;
     long double fx;
     long double fy;
+    std::vector<sf::Vector2f> position_history;
 };
 
 #endif // BODY_HPP

@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cmath>
 #include <string>
+#include <SFML/Graphics.hpp>
+#include <vector>
 
 const long double G = 6.67408e-11;
 
@@ -67,6 +69,13 @@ void Body::reset_force()
     fy = 0;
 }
 
+void Body::store_position(const float DISTANCE_SCALE_FACTOR)
+{
+    position_history.emplace_back(sf::Vector2f(static_cast<float>(x) * DISTANCE_SCALE_FACTOR, static_cast<float>(-y) * DISTANCE_SCALE_FACTOR));
+    if (position_history.size() > 1000)
+        position_history.erase(position_history.begin());
+}
+
 // Getters
 std::string Body::get_name() const { return name; }
 long double Body::get_x() const { return x; }
@@ -77,3 +86,4 @@ long double Body::get_fx() const { return fx; }
 long double Body::get_fy() const { return fy; }
 long double Body::get_mass() const { return mass; }
 long double Body::get_radius() const { return radius; }
+std::vector<sf::Vector2f> Body::get_position_history() const { return position_history; }
