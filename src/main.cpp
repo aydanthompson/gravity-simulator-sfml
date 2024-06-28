@@ -44,7 +44,7 @@ void draw_grid(sf::RenderWindow &window, const sf::View &view)
     window.draw(grid_lines);
 }
 
-void focus_view_on_body(sf::RenderWindow &window, Body *body, const float DISTANCE_SCALE_FACTOR)
+void focus_view_on_body(sf::RenderWindow &window, Body *body, const float DISTANCE_SCALE_FACTOR, float zoom_factor)
 {
     if (!body)
         return;
@@ -55,6 +55,7 @@ void focus_view_on_body(sf::RenderWindow &window, Body *body, const float DISTAN
 
     // Create view centred on body, retain current window size.
     sf::View view = sf::View(sf::FloatRect(top_left, sf::Vector2f(window.getSize())));
+    view.zoom(zoom_factor);
     window.setView(view);
 }
 
@@ -122,6 +123,10 @@ int main()
     // 1440 is equivalent to 1 day per second at 60 updates per second.
     float dt = 1440.0f;
 
+    int frame_count = 0;
+    int record_position_interval = 10;
+    float zoom_factor = 1.0f;
+
     float hours = 0;
 
     while (window.isOpen())
@@ -145,6 +150,13 @@ int main()
                     }
                 }
             }
+            else if (event.type == sf::Event::MouseWheelScrolled)
+            {
+                if (event.mouseWheelScroll.delta > 0)
+                    zoom_factor *= 0.9f;
+                else if (event.mouseWheelScroll.delta < 0)
+                    zoom_factor *= 1.1f;
+            }
         }
 
         // Update the force applied to each body.
@@ -164,10 +176,13 @@ int main()
         for (Body &body : bodies)
         {
             body.update_position_e(dt);
-            body.store_position(DISTANCE_SCALE_FACTOR);
+            if (frame_count % record_position_interval == 0)
+            {
+                body.store_position(DISTANCE_SCALE_FACTOR);
+            }
         }
 
-        focus_view_on_body(window, focused_body, DISTANCE_SCALE_FACTOR);
+        focus_view_on_body(window, focused_body, DISTANCE_SCALE_FACTOR, zoom_factor);
 
         hours += dt / (60 * 60);
 
@@ -182,6 +197,8 @@ int main()
             window.draw(shapes[i]);
             draw_trails(window, bodies[i]);
         }
+
+        frame_count++;
 
         window.display();
     }
