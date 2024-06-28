@@ -44,10 +44,14 @@ void draw_grid(sf::RenderWindow &window, const sf::View &view)
     window.draw(grid_lines);
 }
 
-void focus_view_on_body(sf::RenderWindow &window, Body &body, const float DISTANCE_SCALE_FACTOR)
+void focus_view_on_body(sf::RenderWindow &window, Body *body, const float DISTANCE_SCALE_FACTOR)
 {
+    if (!body)
+        return;
+
+    printf("Attempting to focus on: %s\n", body->get_name().c_str());
     // Get coordinates of top left corner of window when body is in the centre.
-    sf::Vector2f top_left = sf::Vector2f(body.get_x() * DISTANCE_SCALE_FACTOR, -body.get_y() * DISTANCE_SCALE_FACTOR);
+    sf::Vector2f top_left = sf::Vector2f(body->get_x() * DISTANCE_SCALE_FACTOR, -body->get_y() * DISTANCE_SCALE_FACTOR);
     top_left -= sf::Vector2f(window.getSize()) / 2.0f;
 
     // Create view centred on body, retain current window size.
@@ -98,6 +102,8 @@ int main()
     sf::View default_view(sf::FloatRect(-window_x_halved, -window_y_halved, float(WINDOW_X), float(WINDOW_Y)));
     window.setView(default_view);
 
+    Body *focused_body = &bodies[0];
+
     // Set timescale.
     // 1440 is equivalent to 1 day per second at 60 updates per second.
     float dt = 1440.0f;
@@ -110,7 +116,21 @@ int main()
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
+            {
                 window.close();
+            }
+            else if (event.mouseButton.button == sf::Mouse::Left && event.type == sf::Event::MouseButtonPressed)
+            {
+                sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+                sf::Vector2f world_pos = window.mapPixelToCoords(mouse_pos, window.getView());
+                for (size_t i = 0; i < shapes.size(); ++i)
+                {
+                    if (shapes[i].getGlobalBounds().contains(world_pos))
+                    {
+                        focused_body = &bodies[i];
+                    }
+                }
+            }
         }
 
         // Update the force applied to each body.
@@ -132,7 +152,7 @@ int main()
             body_1.update_position_e(dt);
         }
 
-        focus_view_on_body(window, bodies[1], DISTANCE_SCALE_FACTOR);
+        focus_view_on_body(window, focused_body, DISTANCE_SCALE_FACTOR);
 
         hours += dt / (60 * 60);
 
