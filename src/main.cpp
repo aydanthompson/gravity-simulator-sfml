@@ -80,7 +80,7 @@ void draw_trails(sf::RenderWindow &window, Body &body)
 
 std::vector<Body> load_bodies_from_json(const std::string &setup_name)
 {
-    std::string filename = "data/bodiess.json";
+    std::string filename = "data/bodies.json";
 
     std::printf("Attempting to load \"%s\" from \"%s\"\n", setup_name.c_str(), filename.c_str());
 
