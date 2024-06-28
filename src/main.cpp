@@ -68,7 +68,7 @@ void draw_trails(sf::RenderWindow &window, Body &body)
         for (size_t i = 0; i < position_history.size(); ++i)
         {
             lines[i].position = position_history[i];
-            lines[i].color = sf::Color::White;
+            lines[i].color = body.get_colour();
         }
         window.draw(lines);
     }
@@ -92,21 +92,20 @@ int main()
     window.setFramerateLimit(60);
 
     // Create bodies.
-    Body body_a("Earth", 0, 0, 5.974e24, 6378.1e3, 0, 0);
-    Body body_b("Moon", 0.4055e9, 0, 0.07346e24, 1738.1e3, 0, -0.970e3);
-    Body body_c("Red", 0.8055e9, 0, 0.07346e4, 5738.1e2, 0, -0.470e3);
-    Body body_d("Magenta", 0, 0.8e9, 0.07346e8, 1738.1e3, 0.470e3, 0);
-    Body body_e("Yellow", 0, -0.8e9, 0.07346e8, 1738.1e3, -0.470e3, 0);
-    Body body_f("Green", 0.4055e9, -0.4055e9, 0.07346e8, 1738.1e3, 0, -0.970e3);
+    Body body_a("Earth", sf::Color::Blue, 0, 0, 5.974e24, 6378.1e3, 0, 0);
+    Body body_b("Moon", sf::Color::White, 0.4055e9, 0, 0.07346e24, 1738.1e3, 0, -0.970e3);
+    Body body_c("Red", sf::Color::Red, 0.8055e9, 0, 0.07346e4, 5738.1e2, 0, -0.470e3);
+    Body body_d("Magenta", sf::Color::Magenta, 0, 0.8e9, 0.07346e8, 1738.1e3, 0.470e3, 0);
+    Body body_e("Yellow", sf::Color::Yellow, 0, -0.8e9, 0.07346e8, 1738.1e3, -0.470e3, 0);
+    Body body_f("Green", sf::Color::Green, 0.4055e9, -0.4055e9, 0.07346e8, 1738.1e3, 0, -0.970e3);
     std::vector<Body> bodies = {body_a, body_b, body_c, body_d, body_e, body_f};
 
     // Create shapes.
     std::vector<sf::CircleShape> shapes = {};
-    std::vector<sf::Color> colours = {sf::Color::Blue, sf::Color::White, sf::Color::Red, sf::Color::Magenta, sf::Color::Yellow, sf::Color::Green};
     for (size_t i = 0; i < bodies.size(); ++i)
     {
         sf::CircleShape shape(bodies[i].get_radius() * SIZE_SCALE_FACTOR);
-        shape.setFillColor(colours[i]);
+        shape.setFillColor(bodies[i].get_colour());
         shape.setOrigin(bodies[i].get_radius() * SIZE_SCALE_FACTOR, bodies[i].get_radius() * SIZE_SCALE_FACTOR);
         shapes.push_back(shape);
     }

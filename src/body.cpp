@@ -7,8 +7,8 @@
 
 const long double G = 6.67408e-11;
 
-Body::Body(const std::string &name, long double x, long double y, long double mass, long double radius, long double vx, long double vy)
-    : name(name), x(x), y(y), mass(mass), radius(radius), vx(vx), vy(vy), fx(0), fy(0) {}
+Body::Body(const std::string &name, sf::Color colour, long double x, long double y, long double mass, long double radius, long double vx, long double vy)
+    : name(name), colour(colour), x(x), y(y), mass(mass), radius(radius), vx(vx), vy(vy), fx(0), fy(0) {}
 
 void Body::update_position_rk4(float dt)
 {
@@ -78,6 +78,7 @@ void Body::store_position(const float DISTANCE_SCALE_FACTOR)
 
 // Getters
 std::string Body::get_name() const { return name; }
+sf::Color Body::get_colour() const { return colour; }
 long double Body::get_x() const { return x; }
 long double Body::get_y() const { return y; }
 long double Body::get_vx() const { return vx; }

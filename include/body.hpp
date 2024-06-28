@@ -8,7 +8,7 @@
 class Body
 {
 public:
-    Body(const std::string &name, long double x, long double y, long double mass, long double radius, long double vx, long double vy);
+    Body(const std::string &name, sf::Color colour, long double x, long double y, long double mass, long double radius, long double vx, long double vy);
     void update_position_rk4(float dt);
     void update_position_e(float dt);
     void update_force(const Body &body_alt);
@@ -21,12 +21,14 @@ public:
     long double get_fx() const;
     long double get_fy() const;
     std::string get_name() const;
+    sf::Color get_colour() const;
     void reset_force();
     void store_position(const float);
     std::vector<sf::Vector2f> get_position_history() const;
 
 private:
     std::string name;
+    sf::Color colour;
     long double x;
     long double y;
     long double mass;
