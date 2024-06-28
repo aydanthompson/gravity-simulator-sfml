@@ -11,7 +11,7 @@
 void draw_grid(sf::RenderWindow &window, const sf::View &view)
 {
     // Set major and minor spacing distance and colour.
-    float major_spacing = 100.0f;
+    float major_spacing = 1.0e6f;
     float minor_spacing = major_spacing / 10.0f;
     sf::Color major_colour = sf::Color(64, 64, 64, 32);
     sf::Color minor_colour = sf::Color(64, 64, 64, 16);
@@ -122,12 +122,12 @@ std::vector<Body> load_bodies_from_json(const std::string &setup_name)
 int main()
 {
     // Set window parameters.
-    const int WINDOW_X = 1080;
+    const int WINDOW_X = 1920;
     const int WINDOW_Y = 1080;
 
     // Define scaling factors.
     const float DISTANCE_SCALE_FACTOR = 0.0000005;
-    const float SIZE_SCALE_FACTOR = 0.000005;
+    const float SIZE_SCALE_FACTOR = 0.0001;
 
     // Configure window.
     sf::ContextSettings settings;
@@ -137,7 +137,7 @@ int main()
     window.setFramerateLimit(120);
 
     // Create bodies.
-    std::vector<Body> bodies = load_bodies_from_json("earth_soi");
+    std::vector<Body> bodies = load_bodies_from_json("solar_system");
 
     // Create shapes.
     std::vector<sf::CircleShape> shapes = {};
