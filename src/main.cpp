@@ -65,6 +65,7 @@ void focus_view_on_body(sf::RenderWindow &window, Body *body, const float DISTAN
 void draw_trails(sf::RenderWindow &window, Body &body)
 {
     std::vector<sf::Vector2f> position_history = body.get_position_history();
+    sf::Color base_colour = body.get_colour();
 
     if (position_history.size() >= 2)
     {
@@ -72,7 +73,8 @@ void draw_trails(sf::RenderWindow &window, Body &body)
         for (size_t i = 0; i < position_history.size(); ++i)
         {
             lines[i].position = position_history[i];
-            lines[i].color = body.get_colour();
+            float alpha = static_cast<float>(i) / position_history.size() * 255;
+            lines[i].color = sf::Color(base_colour.r, base_colour.g, base_colour.b, static_cast<sf::Uint8>(alpha));
         }
         window.draw(lines);
     }
