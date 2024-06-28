@@ -84,7 +84,7 @@ int main()
     // Create shapes.
     std::vector<sf::CircleShape> shapes = {};
     std::vector<sf::Color> colours = {sf::Color::Blue, sf::Color::White, sf::Color::Red, sf::Color::Magenta, sf::Color::Yellow, sf::Color::Green};
-    for (int i = 0; i < bodies.size(); ++i)
+    for (size_t i = 0; i < bodies.size(); ++i)
     {
         sf::CircleShape shape(bodies[i].get_radius() * SIZE_SCALE_FACTOR);
         shape.setFillColor(colours[i]);
@@ -141,7 +141,7 @@ int main()
         draw_grid(window, window.getView());
 
         // Update and draw all shapes.
-        for (int i = 0; i < shapes.size(); ++i)
+        for (size_t i = 0; i < shapes.size(); ++i)
         {
             shapes[i].setPosition(bodies[i].get_x() * DISTANCE_SCALE_FACTOR, -bodies[i].get_y() * DISTANCE_SCALE_FACTOR);
             window.draw(shapes[i]);
