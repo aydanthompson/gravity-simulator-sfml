@@ -4,6 +4,9 @@
 #include <iomanip>
 #include <vector>
 #include <cmath>
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <iostream>
 
 void draw_grid(sf::RenderWindow &window, const sf::View &view)
 {
@@ -75,6 +78,47 @@ void draw_trails(sf::RenderWindow &window, Body &body)
     }
 }
 
+std::vector<Body> load_bodies_from_json(const std::string &setup_name)
+{
+    std::string filename = "data/bodiess.json";
+
+    std::printf("Attempting to load \"%s\" from \"%s\"\n", setup_name.c_str(), filename.c_str());
+
+    std::ifstream file(filename);
+    if (!file.is_open())
+    {
+        std::cerr << "Failed to open file \"" << filename << "\"" << std::endl;
+        return {};
+    }
+
+    nlohmann::json json;
+    file >> json;
+    file.close();
+
+    std::vector<Body> bodies = {};
+    if (json.contains("setups") && json["setups"].contains(setup_name))
+    {
+        for (const auto &body : json["setups"][setup_name])
+        {
+            std::string name = body["name"];
+            sf::Color colour(body["colour"]["r"],
+                             body["colour"]["g"],
+                             body["colour"]["b"],
+                             body["colour"]["a"]);
+            float x = body["x"];
+            float y = body["y"];
+            double mass = body["mass"];
+            double radius = body["radius"];
+            float vx = body["vx"];
+            float vy = body["vy"];
+
+            bodies.push_back(Body(name, colour, x, y, mass, radius, vx, vy));
+        }
+    }
+
+    return bodies;
+}
+
 int main()
 {
     // Set window parameters.
@@ -93,13 +137,7 @@ int main()
     window.setFramerateLimit(120);
 
     // Create bodies.
-    Body body_a("Earth", sf::Color::Blue, 0, 0, 5.974e24, 6378.1e3, 0, 0);
-    Body body_b("Moon", sf::Color::White, 0.4055e9, 0, 0.07346e24, 1738.1e3, 0, -0.970e3);
-    Body body_c("Red", sf::Color::Red, 0.8055e9, 0, 0.07346e4, 5738.1e2, 0, -0.470e3);
-    Body body_d("Magenta", sf::Color::Magenta, 0, 0.8e9, 0.07346e8, 1738.1e3, 0.470e3, 0);
-    Body body_e("Yellow", sf::Color::Yellow, 0, -0.8e9, 0.07346e8, 1738.1e3, -0.470e3, 0);
-    Body body_f("Green", sf::Color::Green, 0.4055e9, -0.4055e9, 0.07346e8, 1738.1e3, 0, -0.970e3);
-    std::vector<Body> bodies = {body_a, body_b, body_c, body_d, body_e, body_f};
+    std::vector<Body> bodies = load_bodies_from_json("earth_soi");
 
     // Create shapes.
     std::vector<sf::CircleShape> shapes = {};
