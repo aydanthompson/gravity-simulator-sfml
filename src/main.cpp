@@ -49,7 +49,6 @@ void focus_view_on_body(sf::RenderWindow &window, Body *body, const float DISTAN
     if (!body)
         return;
 
-    printf("Attempting to focus on: %s\n", body->get_name().c_str());
     // Get coordinates of top left corner of window when body is in the centre.
     sf::Vector2f top_left = sf::Vector2f(body->get_x() * DISTANCE_SCALE_FACTOR, -body->get_y() * DISTANCE_SCALE_FACTOR);
     top_left -= sf::Vector2f(window.getSize()) / 2.0f;
