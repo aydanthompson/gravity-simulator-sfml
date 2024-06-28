@@ -90,7 +90,7 @@ int main()
     settings.antialiasingLevel = 4.0;
     sf::RenderWindow window(sf::VideoMode(WINDOW_X, WINDOW_Y), "Gravity Simulator", sf::Style::Close, settings);
     window.setVerticalSyncEnabled(true);
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(120);
 
     // Create bodies.
     Body body_a("Earth", sf::Color::Blue, 0, 0, 5.974e24, 6378.1e3, 0, 0);
