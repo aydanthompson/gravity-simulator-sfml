@@ -47,18 +47,17 @@ void draw_grid(sf::RenderWindow &window, const sf::View &view)
     window.draw(grid_lines);
 }
 
-void focus_view_on_body(sf::RenderWindow &window, Body *body, const float DISTANCE_SCALE_FACTOR, float zoom_factor)
+void focus_view_on_body(sf::RenderWindow &window, Body *body, const float DISTANCE_SCALE_FACTOR)
 {
     if (!body)
         return;
 
-    // Get coordinates of top left corner of window when body is in the centre.
-    sf::Vector2f top_left = sf::Vector2f(body->get_x() * DISTANCE_SCALE_FACTOR, -body->get_y() * DISTANCE_SCALE_FACTOR);
-    top_left -= sf::Vector2f(window.getSize()) / 2.0f;
+    // Get coordinates of body.
+    sf::Vector2f body_pos = sf::Vector2f(body->get_x() * DISTANCE_SCALE_FACTOR, -body->get_y() * DISTANCE_SCALE_FACTOR);
 
-    // Create view centred on body, retain current window size.
-    sf::View view = sf::View(sf::FloatRect(top_left, sf::Vector2f(window.getSize())));
-    view.zoom(zoom_factor);
+    // Centre current view on body.
+    sf::View view = window.getView();
+    view.setCenter(body_pos);
     window.setView(view);
 }
 
@@ -157,7 +156,12 @@ int main()
     sf::View default_view(sf::FloatRect(-window_x_halved, -window_y_halved, float(WINDOW_X), float(WINDOW_Y)));
     window.setView(default_view);
 
+    // View settings.
     Body *focused_body = &bodies[0];
+    bool focused_on_body = false;
+    bool dragging = false;
+    sf::Vector2f view_offset(0.f, 0.f);
+    sf::Vector2i last_mouse_pos;
 
     // Set timescale.
     // 1440 is equivalent to 1 day per second at 60 updates per second.
@@ -165,7 +169,8 @@ int main()
 
     int frame_count = 0;
     int record_position_interval = 10;
-    float zoom_factor = 1.0f;
+
+    float zoom_level = 1.0f;
 
     float hours = 0;
 
@@ -178,24 +183,60 @@ int main()
             {
                 window.close();
             }
-            else if (event.mouseButton.button == sf::Mouse::Left && event.type == sf::Event::MouseButtonPressed)
+
+            if (event.mouseButton.button == sf::Mouse::Left && event.type == sf::Event::MouseButtonPressed)
             {
+                bool new_body_focus = false;
                 sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+                last_mouse_pos = mouse_pos;
                 sf::Vector2f world_pos = window.mapPixelToCoords(mouse_pos, window.getView());
                 for (size_t i = 0; i < shapes.size(); ++i)
                 {
                     if (shapes[i].getGlobalBounds().contains(world_pos))
                     {
                         focused_body = &bodies[i];
+                        focused_on_body = true;
+                        new_body_focus = true;
                     }
                 }
+
+                if (!new_body_focus)
+                    dragging = true;
             }
-            else if (event.type == sf::Event::MouseWheelScrolled)
+
+            if (event.mouseButton.button == sf::Mouse::Left && event.type == sf::Event::MouseButtonReleased)
             {
+                dragging = false;
+            }
+
+            if (event.type == sf::Event::MouseMoved && dragging)
+            {
+                sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+                sf::Vector2f delta = static_cast<sf::Vector2f>(last_mouse_pos - mouse_pos);
+                delta *= zoom_level;
+
+                view_offset += delta;
+                sf::View view = window.getView();
+                view.move(delta);
+                window.setView(view);
+
+                last_mouse_pos = mouse_pos;
+                focused_on_body = false;
+            }
+
+            if (event.type == sf::Event::MouseWheelScrolled)
+            {
+                float zoom_factor = 1.0f;
                 if (event.mouseWheelScroll.delta > 0)
                     zoom_factor *= 0.9f;
                 else if (event.mouseWheelScroll.delta < 0)
                     zoom_factor *= 1.1f;
+
+                zoom_level *= zoom_factor;
+
+                sf::View current_view = window.getView();
+                current_view.zoom(zoom_factor);
+                window.setView(current_view);
             }
         }
 
@@ -222,7 +263,10 @@ int main()
             }
         }
 
-        focus_view_on_body(window, focused_body, DISTANCE_SCALE_FACTOR, zoom_factor);
+        if (focused_on_body == true)
+        {
+            focus_view_on_body(window, focused_body, DISTANCE_SCALE_FACTOR);
+        }
 
         hours += dt / (60 * 60);
 
