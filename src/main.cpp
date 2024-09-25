@@ -8,11 +8,19 @@
 #include <fstream>
 #include <iostream>
 
-void draw_grid(sf::RenderWindow &window, const sf::View &view)
+void draw_grid(sf::RenderWindow &window, const sf::View &view, float zoom_level)
 {
-    // Set major and minor spacing distance and colour.
-    float major_spacing = 1.0e6f;
-    float minor_spacing = major_spacing / 10.0f;
+    // Set spacing for major and minor gridlines.
+    int minor_per_major = 4;
+    float major_spacing = 1.6e2f;
+    float minor_spacing = major_spacing / minor_per_major;
+
+    // Implement max/min zoom level else this will cause crash!
+    float scale_factor = std::pow(2.0f, std::round(std::log2(zoom_level)));
+    major_spacing *= scale_factor;
+    minor_spacing *= scale_factor;
+
+    // Set colour for major and minor gridlines.
     sf::Color major_colour = sf::Color(64, 64, 64, 32);
     sf::Color minor_colour = sf::Color(64, 64, 64, 16);
 
@@ -31,7 +39,7 @@ void draw_grid(sf::RenderWindow &window, const sf::View &view)
     // Draw vertical lines.
     for (float x = start_x; x <= bottom_right.x; x += minor_spacing)
     {
-        sf::Color colour = ((int(x) % int(major_spacing)) == 0) ? major_colour : minor_colour;
+        sf::Color colour = fmod(x, major_spacing) == 0.0f ? major_colour : minor_colour;
         grid_lines.append(sf::Vertex(sf::Vector2f(x, top_left.y), colour));
         grid_lines.append(sf::Vertex(sf::Vector2f(x, bottom_right.y), colour));
     }
@@ -39,7 +47,7 @@ void draw_grid(sf::RenderWindow &window, const sf::View &view)
     // Draw horizontal lines.
     for (float y = start_y; y <= bottom_right.y; y += minor_spacing)
     {
-        sf::Color colour = ((int(y) % int(major_spacing)) == 0) ? major_colour : minor_colour;
+        sf::Color colour = fmod(y, major_spacing) == 0.0f ? major_colour : minor_colour;
         grid_lines.append(sf::Vertex(sf::Vector2f(top_left.x, y), colour));
         grid_lines.append(sf::Vertex(sf::Vector2f(bottom_right.x, y), colour));
     }
@@ -272,7 +280,7 @@ int main()
 
         window.clear();
 
-        draw_grid(window, window.getView());
+        draw_grid(window, window.getView(), zoom_level);
 
         // Update and draw all shapes.
         for (size_t i = 0; i < shapes.size(); ++i)
